@@ -15,6 +15,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductService.Domain", "sr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductService.Infrastructure", "src\ProductService\ProductService.Infrastructure\ProductService.Infrastructure.csproj", "{784FFABB-8A19-C5FA-94EB-B5DA8FEF770E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductService.Tests", "tests\ProductService.Tests\ProductService.Tests.csproj", "{35BCEAFB-01FC-419C-B606-B53FAC072C2A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{8E645589-3332-4FA8-9853-BA16FDB90DE9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,6 +41,10 @@ Global
 		{784FFABB-8A19-C5FA-94EB-B5DA8FEF770E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{784FFABB-8A19-C5FA-94EB-B5DA8FEF770E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{784FFABB-8A19-C5FA-94EB-B5DA8FEF770E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35BCEAFB-01FC-419C-B606-B53FAC072C2A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35BCEAFB-01FC-419C-B606-B53FAC072C2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35BCEAFB-01FC-419C-B606-B53FAC072C2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35BCEAFB-01FC-419C-B606-B53FAC072C2A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -47,6 +55,7 @@ Global
 		{B49F925B-EF53-7BE6-ECC0-43F6592CE422} = {ABA75523-DBDC-4216-B30B-0FE750FEE636}
 		{EE17039F-61F8-F32D-177B-3D5815BC0743} = {ABA75523-DBDC-4216-B30B-0FE750FEE636}
 		{784FFABB-8A19-C5FA-94EB-B5DA8FEF770E} = {ABA75523-DBDC-4216-B30B-0FE750FEE636}
+		{35BCEAFB-01FC-419C-B606-B53FAC072C2A} = {8E645589-3332-4FA8-9853-BA16FDB90DE9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {321E7989-649C-4D72-B7DA-D5E02C4B99F2}
