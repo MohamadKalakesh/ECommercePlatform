@@ -8,8 +8,6 @@
 
   <ItemGroup>
     <Folder Include="Events\" />
-    <Folder Include="Interfaces\" />
-    <Folder Include="Common\" />
     <Folder Include="ValueObjects\" />
   </ItemGroup>
 
