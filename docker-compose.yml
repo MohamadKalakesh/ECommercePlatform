@@ -1,0 +1,20 @@
+services:
+  product-api:
+    build:
+      context: ./src/ProductService
+      dockerfile: ProductService.API/Dockerfile
+    ports:
+      - "8010:8080"
+    depends_on:
+      - sqlserver
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=ProductDb;User=sa;Password=p@ssw0rd;TrustServerCertificate=true;Encrypt=false;
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      SA_PASSWORD: "p@ssw0rd"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
