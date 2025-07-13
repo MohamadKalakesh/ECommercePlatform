@@ -1,20 +1,26 @@
-﻿FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+﻿# STAGE 1: Build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
+# Copy project files
 COPY ProductService.API/ProductService.API.csproj ProductService.API/
 COPY ProductService.Application/ProductService.Application.csproj ProductService.Application/
 COPY ProductService.Domain/ProductService.Domain.csproj ProductService.Domain/
 COPY ProductService.Infrastructure/ProductService.Infrastructure.csproj ProductService.Infrastructure/
 
+# Restore dependencies
 RUN dotnet restore ProductService.API/ProductService.API.csproj
 
+# Copy remaining files and build the app
 COPY . .
-
 WORKDIR /src/ProductService.API
 RUN dotnet publish ProductService.API.csproj -c Release -o /app/publish
 
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
+# STAGE 2: Runtime
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
 COPY --from=build /app/publish .
 
+# Expose port and set entry point
+EXPOSE 8080
 ENTRYPOINT ["dotnet", "ProductService.API.dll"]

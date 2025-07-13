@@ -16,7 +16,10 @@ namespace ProductService.Infrastructure.Data
 
             var builder = new DbContextOptionsBuilder<ProductDbContext>();
             var connectionString = configuration.GetConnectionString("DefaultConnection");
-            builder.UseSqlServer(connectionString);
+            builder.UseSqlServer(connectionString, sqlOptions =>
+            {
+                sqlOptions.EnableRetryOnFailure();
+            });
             return new ProductDbContext(builder.Options);
         }
     }

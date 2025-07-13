@@ -1,5 +1,5 @@
 services:
-  product-api:
+  product-service:
     build:
       context: ./src/ProductService
       dockerfile: ProductService.API/Dockerfile
@@ -9,12 +9,33 @@ services:
       - sqlserver
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=ProductDb;User=sa;Password=p@ssw0rd;TrustServerCertificate=true;Encrypt=false;
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=ProductServiceDb;User=sa;Password=p@ssw0rd;TrustServerCertificate=true;Encrypt=false;
+      # - ASPNETCORE_URLS=http://+:80
+    command:
+      ["sh", "-c", "./wait-for-sql.sh sqlserver dotnet ProductService.API.dll"]
+
+  api-gateway:
+    build:
+      context: ./ApiGateway
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8080"
+    depends_on:
+      - product-service
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      # - ASPNETCORE_URLS=http://+:80
 
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlserver
     environment:
       SA_PASSWORD: "p@ssw0rd"
       ACCEPT_EULA: "Y"
     ports:
       - "1433:1433"
+    volumes:
+      - sqlserverdata:/var/opt/mssql
+
+volumes:
+  sqlserverdata:

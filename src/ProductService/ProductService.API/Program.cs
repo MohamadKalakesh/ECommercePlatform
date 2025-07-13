@@ -3,7 +3,6 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using ProductService.API.Middlewares;
 using ProductService.Application.Commands.CreateProduct;
-using ProductService.Application.Commands.UpdateProduct;
 using ProductService.Application.Common.Behaviors;
 using ProductService.Domain.Interfaces;
 using ProductService.Infrastructure.Data;
@@ -26,6 +25,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<ProductDbContext>();
+    dbContext.Database.Migrate();
+}
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
