@@ -1,12 +1,15 @@
 using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using ProductService.API.Middlewares;
 using ProductService.Application.Commands.CreateProduct;
 using ProductService.Application.Common.Behaviors;
 using ProductService.Domain.Interfaces;
 using ProductService.Infrastructure.Data;
 using ProductService.Infrastructure.Repositories;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -5,15 +5,13 @@ services:
       dockerfile: ProductService.API/Dockerfile
     ports:
       - "8010:8080"
-    depends_on:
-      - sqlserver
     volumes:
       - ./src/ProductService:/app
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=ProductServiceDb;User=sa;Password=p@ssw0rd;TrustServerCertificate=true;Encrypt=false;
+      - ConnectionStrings__DefaultConnection=Server=host.docker.internal,1433;Database=ProductServiceDb;User=sa;Password=p@ssw0rd;TrustServerCertificate=true;Encrypt=false;
     command:
-      ["sh", "-c", "./ProductService.API/wait-for-sql.sh sqlserver dotnet watch run --urls=http://0.0.0.0:8080 --project ProductService.API/ProductService.API.csproj"]
+      ["sh", "-c", "dotnet watch run --urls=http://0.0.0.0:8080 --project ProductService.API/ProductService.API.csproj"]
 
   api-gateway:
     build:
@@ -35,16 +33,36 @@ services:
         "ApiGateway.csproj"
       ]
 
-  sqlserver:
-    image: mcr.microsoft.com/mssql/server:2022-latest
-    container_name: sqlserver
-    environment:
-      SA_PASSWORD: "p@ssw0rd"
-      ACCEPT_EULA: "Y"
+  auth-service:
+    build:
+      context: ./AuthService.API
+      dockerfile: Dockerfile
     ports:
-      - "1433:1433"
+      - "8005:8080"
     volumes:
-      - sqlserverdata:/var/opt/mssql
+      - ./AuthService.API:/app
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    command:
+      [
+        "dotnet",
+        "watch",
+        "run",
+        "--urls=http://0.0.0.0:8080",
+        "--project",
+        "AuthService.API.csproj"
+      ]
 
-volumes:
-  sqlserverdata:
+  # sqlserver:
+  #   image: mcr.microsoft.com/mssql/server:2022-latest
+  #   container_name: sqlserver
+  #   environment:
+  #     SA_PASSWORD: "p@ssw0rd"
+  #     ACCEPT_EULA: "Y"
+  #   ports:
+  #     - "1433:1433"
+  #   volumes:
+  #     - sqlserverdata:/var/opt/mssql
+
+# volumes:
+#   sqlserverdata:

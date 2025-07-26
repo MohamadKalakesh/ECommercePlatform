@@ -1,9 +1,9 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProductService.Application.Commands.CreateProduct;
 using ProductService.Application.Commands.DeleteProduct;
 using ProductService.Application.Commands.UpdateProduct;
-using ProductService.Application.DTOs;
 using ProductService.Application.Queries.GetAllProducts;
 using ProductService.Application.Queries.GetProductById;
 

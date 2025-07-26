@@ -8,7 +8,7 @@ WORKDIR /app
 COPY . .
 
 # Install any required tools here (optional)
-RUN apt-get update && apt-get install -y netcat-openbsd
+#RUN apt-get update && apt-get install -y netcat-openbsd
 
 # Expose the port your app listens on
 EXPOSE 8080
