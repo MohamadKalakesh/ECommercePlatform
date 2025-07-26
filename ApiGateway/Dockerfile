@@ -1,20 +1,14 @@
-﻿# STAGE 1: Build
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-WORKDIR /src
+﻿# Use .NET SDK image for dotnet watch
+FROM mcr.microsoft.com/dotnet/sdk:8.0
 
-# Copy project file and restore
-COPY ApiGateway.csproj .
-RUN dotnet restore
-
-# Copy everything and publish
-COPY . .
-RUN dotnet publish -c Release -o /app/publish
-
-# STAGE 2: Runtime
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
+# Set working directory inside the container
 WORKDIR /app
-COPY --from=build /app/publish .
 
-# Expose port and start
+# Copy everything (your local code will be mounted over this)
+COPY . .
+
+# Expose the app's port
 EXPOSE 8080
-ENTRYPOINT ["dotnet", "ApiGateway.dll"]
+
+# Start with dotnet watch
+CMD ["dotnet", "watch", "run", "--project", "ApiGateway.csproj"]

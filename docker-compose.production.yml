@@ -2,38 +2,27 @@ services:
   product-service:
     build:
       context: ./src/ProductService
-      dockerfile: ProductService.API/Dockerfile
+      dockerfile: ProductService.API/Dockerfile.production
     ports:
       - "8010:8080"
     depends_on:
       - sqlserver
-    volumes:
-      - ./src/ProductService:/app
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=ProductServiceDb;User=sa;Password=p@ssw0rd;TrustServerCertificate=true;Encrypt=false;
     command:
-      ["sh", "-c", "./ProductService.API/wait-for-sql.sh sqlserver dotnet watch run --urls=http://0.0.0.0:8080 --project ProductService.API/ProductService.API.csproj"]
+      ["sh", "-c", "./ProductService.API/wait-for-sql.sh sqlserver dotnet ProductService.API.dll"]
 
   api-gateway:
     build:
       context: ./ApiGateway
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.production
     ports:
       - "8000:8080"
     depends_on:
       - product-service
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-    command:
-      [
-        "dotnet",
-        "watch",
-        "run",
-        "--urls=http://0.0.0.0:8080",
-        "--project",
-        "ApiGateway.csproj"
-      ]
 
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest

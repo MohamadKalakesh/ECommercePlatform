@@ -1,26 +1,17 @@
-﻿# STAGE 1: Build
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-WORKDIR /src
+﻿# Use .NET SDK image with dotnet-watch available
+FROM mcr.microsoft.com/dotnet/sdk:8.0
 
-# Copy project files
-COPY ProductService.API/ProductService.API.csproj ProductService.API/
-COPY ProductService.Application/ProductService.Application.csproj ProductService.Application/
-COPY ProductService.Domain/ProductService.Domain.csproj ProductService.Domain/
-COPY ProductService.Infrastructure/ProductService.Infrastructure.csproj ProductService.Infrastructure/
-
-# Restore dependencies
-RUN dotnet restore ProductService.API/ProductService.API.csproj
-
-# Copy remaining files and build the app
-COPY . .
-WORKDIR /src/ProductService.API
-RUN dotnet publish ProductService.API.csproj -c Release -o /app/publish
-
-# STAGE 2: Runtime
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
+# Set working directory inside the container
 WORKDIR /app
-COPY --from=build /app/publish .
 
-# Expose port and set entry point
+# Copy the entire source code
+COPY . .
+
+# Install any required tools here (optional)
+RUN apt-get update && apt-get install -y netcat-openbsd
+
+# Expose the port your app listens on
 EXPOSE 8080
-ENTRYPOINT ["dotnet", "ProductService.API.dll"]
+
+# Run the application with dotnet watch
+CMD ["dotnet", "watch", "run", "--project", "ProductService.API/ProductService.API.csproj"]
