@@ -12,6 +12,20 @@ services:
       - ConnectionStrings__DefaultConnection=Server=host.docker.internal,1433;Database=ProductServiceDb;User=sa;Password=p@ssw0rd;TrustServerCertificate=true;Encrypt=false;
     command:
       ["sh", "-c", "dotnet watch run --urls=http://0.0.0.0:8080 --project ProductService.API/ProductService.API.csproj"]
+  
+  customer-service:
+    build:
+      context: ./src/CustomerService
+      dockerfile: CustomerService.API/Dockerfile
+    ports:
+      - "8020:8080"
+    volumes:
+      - ./src/CustomerService:/app
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=host.docker.internal,1433;Database=CustomerServiceDb;User=sa;Password=p@ssw0rd;TrustServerCertificate=true;Encrypt=false;
+    command:
+      ["sh", "-c", "dotnet watch run --urls=http://0.0.0.0:8080 --project CustomerService.API/CustomerService.API.csproj"]
 
   api-gateway:
     build:
