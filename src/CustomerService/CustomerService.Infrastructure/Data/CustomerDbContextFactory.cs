@@ -2,24 +2,24 @@
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 
-namespace ProductService.Infrastructure.Data
+namespace CustomerService.Infrastructure.Data
 {
-    public class ProductDbContextFactory : IDesignTimeDbContextFactory<ProductDbContext>
+    public class CustomerDbContextFactory : IDesignTimeDbContextFactory<CustomerDbContext>
     {
-        public ProductDbContext CreateDbContext(string[] args)
+        public CustomerDbContext CreateDbContext(string[] args)
         {
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json")
                 .Build();
 
-            var builder = new DbContextOptionsBuilder<ProductDbContext>();
+            var builder = new DbContextOptionsBuilder<CustomerDbContext>();
             var connectionString = configuration.GetConnectionString("DefaultConnection");
             builder.UseSqlServer(connectionString, sqlOptions =>
             {
                 sqlOptions.EnableRetryOnFailure();
             });
-            return new ProductDbContext(builder.Options);
+            return new CustomerDbContext(builder.Options);
         }
     }
 }
