@@ -1,17 +1,37 @@
+# docker-compose -f docker-compose.production.yml up --build
+
 services:
   product-service:
     build:
-      context: ./src/ProductService
+      context: ./src/ProductService #specify the context like this to prevent issues in the COPY in the Dockerfile
       dockerfile: ProductService.API/Dockerfile.production
-    ports:
-      - "8010:8080"
     depends_on:
-      - sqlserver
+      - sql-server
+    networks:
+      - internal
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=ProductServiceDb;User=sa;Password=p@ssw0rd;TrustServerCertificate=true;Encrypt=false;
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://0.0.0.0:8080
+      - "ConnectionStrings__DefaultConnection=Server=sql-server;Database=ProductServiceDb;User=sa;Password=p@ssw0rd;TrustServerCertificate=true;Encrypt=false;"
+    restart: unless-stopped
     command:
-      ["sh", "-c", "./ProductService.API/wait-for-sql.sh sqlserver dotnet ProductService.API.dll"]
+      ["./wait-for-it.sh", "sql-server:1433", "--", "dotnet", "ProductService.API.dll"]
+  
+  customer-service:
+    build:
+      context: ./src/CustomerService
+      dockerfile: CustomerService.API/Dockerfile.production
+    depends_on:
+      - sql-server
+    networks:
+      - internal
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://0.0.0.0:8080
+      - "ConnectionStrings__DefaultConnection=Server=sql-server;Database=CustomerServiceDb;User=sa;Password=p@ssw0rd;TrustServerCertificate=true;Encrypt=false;"
+    restart: unless-stopped
+    command:
+      ["./wait-for-it.sh", "sql-server:1433", "--", "dotnet", "CustomerService.API.dll"]
 
   api-gateway:
     build:
@@ -19,21 +39,52 @@ services:
       dockerfile: Dockerfile.production
     ports:
       - "8000:8080"
+    networks:
+      - internal
+      - public
     depends_on:
       - product-service
+      - customer-service
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Production
+      - "ReverseProxy__Clusters__productCluster__Destinations__productAPI__Address=http://product-service:8080/"
+      - "ReverseProxy__Clusters__customerCluster__Destinations__customerAPI__Address=http://customer-service:8080/"
+    restart: unless-stopped
+    command:
+      ["dotnet", "ApiGateway.dll"]
 
-  sqlserver:
+  auth-service:
+    build:
+      context: ./AuthService.API
+      dockerfile: Dockerfile.production
+    ports:
+      - "8005:8080"
+    networks:
+      - public
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - Jwt__Key=${JWT_KEY}                         #docker by default reads the content of .env file (should be in the same directory of docker compose)
+      - Jwt__ExpiryMinutes=${JWT_EXPIRY_MINUTES}
+    restart: unless-stopped
+    command:
+      ["dotnet", "AuthService.API.dll"]
+
+  sql-server:
     image: mcr.microsoft.com/mssql/server:2022-latest
-    container_name: sqlserver
+    container_name: sql-server
     environment:
       SA_PASSWORD: "p@ssw0rd"
       ACCEPT_EULA: "Y"
-    ports:
-      - "1433:1433"
+    networks:
+      - internal
     volumes:
       - sqlserverdata:/var/opt/mssql
 
 volumes:
   sqlserverdata:
+
+networks:
+  internal:
+    driver: bridge  #default value is bridge
+  public:
+    driver: bridge

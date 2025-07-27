@@ -1,0 +1,34 @@
+﻿# STAGE 1: Build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+
+# Copy project files
+COPY CustomerService.API/CustomerService.API.csproj CustomerService.API/
+COPY CustomerService.Application/CustomerService.Application.csproj CustomerService.Application/
+COPY CustomerService.Domain/CustomerService.Domain.csproj CustomerService.Domain/
+COPY CustomerService.Infrastructure/CustomerService.Infrastructure.csproj CustomerService.Infrastructure/
+
+# Restore dependencies
+RUN dotnet restore CustomerService.API/CustomerService.API.csproj
+
+# Copy remaining files and build the app
+COPY . .
+WORKDIR /src/CustomerService.API
+RUN dotnet publish CustomerService.API.csproj -c Release -o /app/publish
+
+# STAGE 2: Runtime
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
+WORKDIR /app
+COPY --from=build /app/publish .
+
+COPY CustomerService.API/wait-for-it.sh /app/wait-for-it.sh
+
+RUN adduser --disabled-password appuser \
+    && chmod +x /app/wait-for-it.sh \
+    && chown -R appuser /app
+
+USER appuser
+
+# Expose port and set entry point
+EXPOSE 8080
+ENTRYPOINT ["dotnet", "CustomerService.API.dll"]

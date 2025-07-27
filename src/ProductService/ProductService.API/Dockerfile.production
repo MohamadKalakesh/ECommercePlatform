@@ -21,6 +21,14 @@ FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
 COPY --from=build /app/publish .
 
+COPY ProductService.API/wait-for-it.sh /app/wait-for-it.sh
+
+RUN adduser --disabled-password appuser \
+    && chmod +x /app/wait-for-it.sh \
+    && chown -R appuser /app
+
+USER appuser
+
 # Expose port and set entry point
 EXPOSE 8080
 ENTRYPOINT ["dotnet", "ProductService.API.dll"]

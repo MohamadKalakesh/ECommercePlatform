@@ -1,33 +1,37 @@
-# docker-compose up OR docker-compose up --build
+# docker-compose -f docker-compose.withsql.yml up --build
 
 services:
   product-service:
     build:
-      context: ./src/ProductService/ProductService.API
-      dockerfile: Dockerfile
+      context: ./src/ProductService
+      dockerfile: ProductService.API/Dockerfile
     ports:
       - "8010:8080"
+    depends_on:
+      - sql-server
     volumes:
       - ./src/ProductService:/app
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - "ConnectionStrings__DefaultConnection=Server=host.docker.internal,1433;Database=ProductServiceDb;User=sa;Password=p@ssw0rd;TrustServerCertificate=true;Encrypt=false;"
+      - "ConnectionStrings__DefaultConnection=Server=sql-server;Database=ProductServiceDb;User=sa;Password=p@ssw0rd;TrustServerCertificate=true;Encrypt=false;"
     command:
-      ["dotnet", "watch", "run", "--urls=http://0.0.0.0:8080", "--project", "ProductService.API/ProductService.API.csproj", "--launch-profile", "Docker"]
+      ["./ProductService.API/wait-for-it.sh", "sql-server:1433", "--", "dotnet", "watch", "run", "--urls=http://0.0.0.0:8080", "--project", "ProductService.API/ProductService.API.csproj", "--launch-profile", "Docker"]
   
   customer-service:
     build:
-      context: ./src/CustomerService/CustomerService.API
-      dockerfile: Dockerfile
+      context: ./src/CustomerService
+      dockerfile: CustomerService.API/Dockerfile
     ports:
       - "8020:8080"
+    depends_on:
+      - sql-server
     volumes:
       - ./src/CustomerService:/app
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - "ConnectionStrings__DefaultConnection=Server=host.docker.internal,1433;Database=CustomerServiceDb;User=sa;Password=p@ssw0rd;TrustServerCertificate=true;Encrypt=false;"
+      - "ConnectionStrings__DefaultConnection=Server=sql-server;Database=CustomerServiceDb;User=sa;Password=p@ssw0rd;TrustServerCertificate=true;Encrypt=false;"
     command:
-      ["dotnet", "watch", "run", "--urls=http://0.0.0.0:8080", "--project", "CustomerService.API/CustomerService.API.csproj", "--launch-profile", "Docker"]
+      ["./CustomerService.API/wait-for-it.sh", "sql-server:1433", "--", "dotnet", "watch", "run", "--urls=http://0.0.0.0:8080", "--project", "CustomerService.API/CustomerService.API.csproj", "--launch-profile", "Docker"]
 
   api-gateway:
     build:
@@ -61,3 +65,17 @@ services:
       - Jwt__ExpiryMinutes=60
     command:
       ["dotnet", "watch", "run", "--urls=http://0.0.0.0:8080", "--project", "AuthService.API.csproj", "--launch-profile", "Docker"]
+
+  sql-server:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sql-server
+    environment:
+      SA_PASSWORD: "p@ssw0rd"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433" #set the host port to something else to be able to access it from the host (as the host sql server is already running on port 1433)
+    volumes:
+      - sqlserverdata:/var/opt/mssql
+
+volumes:
+  sqlserverdata:
