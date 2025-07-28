@@ -1,0 +1,4 @@
+under "C:\Users\{user}\.wslconfig"
+[wsl2]
+memory=2GB
+processors=2
