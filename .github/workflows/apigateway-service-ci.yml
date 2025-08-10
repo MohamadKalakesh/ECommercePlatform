@@ -27,6 +27,6 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: ./ApiGateway
-          file: Dockerfile.production
+          file: ./ApiGateway/Dockerfile.production
           push: true
           tags: mohamadkalakesh96/apigateway-service:latest

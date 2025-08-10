@@ -27,6 +27,6 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: ./AuthService.API
-          file: Dockerfile.production
+          file: ./AuthService.API/Dockerfile.production
           push: true
           tags: mohamadkalakesh96/auth-service:latest
