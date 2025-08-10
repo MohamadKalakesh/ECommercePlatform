@@ -27,6 +27,6 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: ./src
-          dockerfile: CustomerService/CustomerService.API/Dockerfile.production
+          file: CustomerService/CustomerService.API/Dockerfile.production
           push: true
           tags: mohamadkalakesh96/customer-service:latest
