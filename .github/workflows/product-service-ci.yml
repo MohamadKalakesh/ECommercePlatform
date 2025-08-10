@@ -3,7 +3,7 @@ name: Build and Push ProductService Docker Image
 on:
   push:
     branches:
-      - release
+      - main
   workflow_dispatch:
 
 jobs:
@@ -26,7 +26,7 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
-          context: ./src/ProductService/ProductService.API
-          dockerfile: Dockerfile.production
+          context: ./src
+          dockerfile: ProductService/ProductService.API/Dockerfile.production
           push: true
           tags: mohamadkalakesh96/product-service:latest

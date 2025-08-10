@@ -3,7 +3,7 @@ name: Build and Push AuthService Docker Image
 on:
   push:
     branches:
-      - release
+      - main
   workflow_dispatch:
 
 jobs:
