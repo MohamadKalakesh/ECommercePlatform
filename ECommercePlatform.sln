@@ -60,6 +60,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Certs", "Certs", "{4C64CB6D
 		src\Shared\Cert\devcert.pfx = src\Shared\Cert\devcert.pfx
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{E89234E7-12A4-4DB1-93AC-2448AB278920}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{71BDA9F6-2ACD-40E9-A6F2-581D7538885F}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\apigateway-service-ci.yml = .github\workflows\apigateway-service-ci.yml
+		.github\workflows\auth-service-ci.yml = .github\workflows\auth-service-ci.yml
+		.github\workflows\customer-service-ci.yml = .github\workflows\customer-service-ci.yml
+		.github\workflows\product-service-ci.yml = .github\workflows\product-service-ci.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -133,6 +143,8 @@ Global
 		{8F662CD6-175F-4A00-8443-FE39066BB11B} = {8463CDF7-E8CE-4F19-80BE-22D09CF4C033}
 		{F8546B2C-EA82-4FD5-984F-4814BBA59A32} = {8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}
 		{4C64CB6D-A1C3-431F-B765-980B1DFA6E8B} = {8463CDF7-E8CE-4F19-80BE-22D09CF4C033}
+		{E89234E7-12A4-4DB1-93AC-2448AB278920} = {8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}
+		{71BDA9F6-2ACD-40E9-A6F2-581D7538885F} = {E89234E7-12A4-4DB1-93AC-2448AB278920}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {321E7989-649C-4D72-B7DA-D5E02C4B99F2}
