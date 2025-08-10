@@ -3,8 +3,8 @@
 services:
   product-service:
     build:
-      context: ./src/ProductService #specify the context like this to prevent issues in the COPY in the Dockerfile
-      dockerfile: ProductService.API/Dockerfile.production
+      context: ./src #specify the context like this to prevent issues in the COPY in the Dockerfile + it is src to be able to see the Shared folder for proto files
+      dockerfile: ProductService/ProductService.API/Dockerfile.production
     depends_on:
       - sql-server
     networks:
@@ -19,8 +19,8 @@ services:
   
   customer-service:
     build:
-      context: ./src/CustomerService
-      dockerfile: CustomerService.API/Dockerfile.production
+      context: ./src
+      dockerfile: CustomerService/CustomerService.API/Dockerfile.production
     depends_on:
       - sql-server
     networks:
@@ -70,11 +70,11 @@ services:
       ["dotnet", "AuthService.API.dll"]
 
   sql-server:
-    image: mcr.microsoft.com/mssql/server:2022-latest
+    image: mcr.microsoft.com/azure-sql-edge
     container_name: sql-server
     environment:
-      SA_PASSWORD: "p@ssw0rd"
-      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "p@ssw0rd"
+      ACCEPT_EULA: "1"
     networks:
       - internal
     volumes:
