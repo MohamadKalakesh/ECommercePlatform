@@ -1,5 +1,13 @@
 # docker-compose -f docker-compose.withoutsql.yml up --build
 
+#######################################################################################################################################
+#######################################################################################################################################
+#######################################################################################################################################
+### This file may not be updated like docker-compose.yml, it just has the required differences for hosting sql inside the container ###
+#######################################################################################################################################
+#######################################################################################################################################
+#######################################################################################################################################
+
 services:
   product-service:
     build:
@@ -31,7 +39,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - "ConnectionStrings__DefaultConnection=Server=sql-server;Database=CustomerServiceDb;User=sa;Password=p@ssw0rd;TrustServerCertificate=true;Encrypt=false;"
     command:
-      ["./CustomerService.API/wait-for-it.sh", "sql-server:1433", "--", "dotnet", "watch", "run", "--urls=http://0.0.0.0:8080", "--project", "CustomerService.API/CustomerService.API.csproj", "--launch-profile", "Docker"]
+      ["./CustomerService.API/wait-for-it.sh", "sql-server:1433", "--", "dotnet", "watch", "run", "--urls=https://0.0.0.0:8080", "--project", "CustomerService.API/CustomerService.API.csproj", "--launch-profile", "Docker"]
 
   api-gateway:
     build:
@@ -47,7 +55,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - "ReverseProxy__Clusters__productCluster__Destinations__productAPI__Address=http://product-service:8080/"
-      - "ReverseProxy__Clusters__customerCluster__Destinations__customerAPI__Address=http://customer-service:8080/"
+      - "ReverseProxy__Clusters__customerCluster__Destinations__customerAPI__Address=https://customer-service:8080/"
     command:
       ["dotnet", "watch", "run", "--urls=http://0.0.0.0:8080", "--project", "ApiGateway.csproj", "--launch-profile", "Docker"]
 

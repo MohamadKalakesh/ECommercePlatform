@@ -27,7 +27,7 @@ services:
       - internal
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-      - ASPNETCORE_URLS=http://0.0.0.0:8080
+      - ASPNETCORE_URLS=https://0.0.0.0:8080
       - "ConnectionStrings__DefaultConnection=Server=sql-server;Database=CustomerServiceDb;User=sa;Password=p@ssw0rd;TrustServerCertificate=true;Encrypt=false;"
     restart: unless-stopped
     command:
@@ -48,7 +48,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - "ReverseProxy__Clusters__productCluster__Destinations__productAPI__Address=http://product-service:8080/"
-      - "ReverseProxy__Clusters__customerCluster__Destinations__customerAPI__Address=http://customer-service:8080/"
+      - "ReverseProxy__Clusters__customerCluster__Destinations__customerAPI__Address=https://customer-service:8080/"
     restart: unless-stopped
     command:
       ["dotnet", "ApiGateway.dll"]

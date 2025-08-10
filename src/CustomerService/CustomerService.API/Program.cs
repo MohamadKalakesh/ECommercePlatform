@@ -1,7 +1,9 @@
+using CustomerService.API.Services;
 using CustomerService.Application.Abstractions;
 using CustomerService.Domain.Customers;
 using CustomerService.Infrastructure.Data;
 using CustomerService.Infrastructure.Repositories;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +20,21 @@ builder.Services.AddDbContext<CustomerDbContext>(options =>
 
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<ICustomerService, CustomerService.Application.Services.CustomerService>();
+
+// Add gRPC services
+builder.Services.AddGrpc(options =>
+{
+    options.EnableDetailedErrors = true;
+});
+
+//must accept http2 for grpc (I chose Http1AndHttp2 to be able to use the browser)
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ConfigureEndpointDefaults(listenOptions =>
+    {
+        listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
+    });
+});
 
 var app = builder.Build();
 
@@ -39,5 +56,8 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+// Map gRPC service
+app.MapGrpcService<CustomerGrpcService>();
 
 app.Run();

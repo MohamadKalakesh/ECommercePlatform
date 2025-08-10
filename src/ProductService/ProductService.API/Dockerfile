@@ -9,4 +9,4 @@ WORKDIR /app
 
 EXPOSE 8080
 
-CMD ["dotnet", "watch", "run", "--project", "ProductService.API/ProductService.API.csproj", "--launch-profile", "Docker"]
+CMD ["dotnet", "watch", "run", "--project", "ProductService.API/ProductService.API.csproj", "--launch-profile", "Docker", "--environment", "Docker"]

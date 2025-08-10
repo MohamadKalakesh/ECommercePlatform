@@ -23,8 +23,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.env = .env
 		docker-compose.production.yml = docker-compose.production.yml
-		docker-compose.yml = docker-compose.yml
 		docker-compose.withsql.yml = docker-compose.withsql.yml
+		docker-compose.yml = docker-compose.yml
 		Notes.txt = Notes.txt
 	EndProjectSection
 EndProject
@@ -45,6 +45,20 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomerService.Domain", "src\CustomerService\CustomerService.Domain\CustomerService.Domain.csproj", "{06C50B08-BFA0-4609-A843-C3B3657CB3AB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomerService.Infrastructure", "src\CustomerService\CustomerService.Infrastructure\CustomerService.Infrastructure.csproj", "{7215C83E-087F-41ED-8FE0-53461E45461D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{8463CDF7-E8CE-4F19-80BE-22D09CF4C033}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Protos", "Protos", "{8F662CD6-175F-4A00-8443-FE39066BB11B}"
+	ProjectSection(SolutionItems) = preProject
+		src\Shared\Protos\customer.proto = src\Shared\Protos\customer.proto
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{F8546B2C-EA82-4FD5-984F-4814BBA59A32}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Certs", "Certs", "{4C64CB6D-A1C3-431F-B765-980B1DFA6E8B}"
+	ProjectSection(SolutionItems) = preProject
+		src\Shared\Cert\devcert.pfx = src\Shared\Cert\devcert.pfx
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -115,6 +129,10 @@ Global
 		{0137DA45-AE31-42FB-B9BC-770F3B8FEDF6} = {44D9E9F7-FE9E-4B3B-95F3-1AFF2CC61951}
 		{06C50B08-BFA0-4609-A843-C3B3657CB3AB} = {44D9E9F7-FE9E-4B3B-95F3-1AFF2CC61951}
 		{7215C83E-087F-41ED-8FE0-53461E45461D} = {44D9E9F7-FE9E-4B3B-95F3-1AFF2CC61951}
+		{8463CDF7-E8CE-4F19-80BE-22D09CF4C033} = {F8546B2C-EA82-4FD5-984F-4814BBA59A32}
+		{8F662CD6-175F-4A00-8443-FE39066BB11B} = {8463CDF7-E8CE-4F19-80BE-22D09CF4C033}
+		{F8546B2C-EA82-4FD5-984F-4814BBA59A32} = {8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}
+		{4C64CB6D-A1C3-431F-B765-980B1DFA6E8B} = {8463CDF7-E8CE-4F19-80BE-22D09CF4C033}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {321E7989-649C-4D72-B7DA-D5E02C4B99F2}

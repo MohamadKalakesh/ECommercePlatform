@@ -6,6 +6,7 @@ using ProductService.Application.Commands.DeleteProduct;
 using ProductService.Application.Commands.UpdateProduct;
 using ProductService.Application.Queries.GetAllProducts;
 using ProductService.Application.Queries.GetProductById;
+using ProductService.API.Services;
 
 namespace ProductService.API.Controllers
 {
@@ -14,10 +15,12 @@ namespace ProductService.API.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly ICustomerGrpcClient _customerGrpcClient;
 
-        public ProductsController(IMediator mediator)
+        public ProductsController(IMediator mediator, ICustomerGrpcClient customerGrpcClient)
         {
             _mediator = mediator;
+            _customerGrpcClient = customerGrpcClient;
         }
 
         [HttpPost]
@@ -59,6 +62,40 @@ namespace ProductService.API.Controllers
             var command = new DeleteProductCommand(id);
             var succeeded = await _mediator.Send(command);
             return succeeded ? NoContent() : NotFound();
+        }
+
+        [HttpGet("{productId}/with-customer/{customerEmail}")]
+        public async Task<IActionResult> GetProductWithCustomerInfo(Guid productId, string customerEmail)
+        {
+            // Get product information
+            var productQuery = new GetProductByIdQuery(productId);
+            var product = await _mediator.Send(productQuery);
+            
+            if (product is null)
+                return NotFound("Product not found");
+
+            // Get customer information via gRPC
+            var customer = await _customerGrpcClient.GetCustomerByEmailAsync(customerEmail);
+            
+            if (customer is null)
+                return NotFound("Customer not found");
+
+            // Return combined information
+            var result = new
+            {
+                Product = product,
+                Customer = new
+                {
+                    Id = customer.Id,
+                    Email = customer.Email,
+                    FirstName = customer.FirstName,
+                    LastName = customer.LastName,
+                    PhoneNumber = customer.PhoneNumber,
+                    CreatedAt = customer.CreatedAt
+                }
+            };
+
+            return Ok(result);
         }
     }
 }

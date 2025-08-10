@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Http;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Yarp.ReverseProxy.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 

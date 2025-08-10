@@ -5,29 +5,55 @@ services:
     build:
       context: ./src/ProductService/ProductService.API
       dockerfile: Dockerfile
+    working_dir: /app/ProductService    #had to specify working directory since I have now 2 volumes (ProductService and Shared)
     ports:
       - "8010:8080"
     volumes:
-      - ./src/ProductService:/app
+      - ./src/ProductService:/app/ProductService
+      - ./src/Shared:/app/Shared
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Docker
       - "ConnectionStrings__DefaultConnection=Server=host.docker.internal,1433;Database=ProductServiceDb;User=sa;Password=p@ssw0rd;TrustServerCertificate=true;Encrypt=false;"
     command:
-      ["dotnet", "watch", "run", "--urls=http://0.0.0.0:8080", "--project", "ProductService.API/ProductService.API.csproj", "--launch-profile", "Docker"]
-  
+      [
+        "dotnet",
+        "watch",
+        "run",
+        "--urls=http://0.0.0.0:8080",
+        "--project",
+        "ProductService.API/ProductService.API.csproj",
+        "--launch-profile",
+        "Docker",
+        "--environment",
+        "Docker"
+      ]
+
   customer-service:
     build:
       context: ./src/CustomerService/CustomerService.API
       dockerfile: Dockerfile
+    working_dir: /app/CustomerService    #had to specify working directory since I have now 2 volumes (ProductService and Shared)
     ports:
       - "8020:8080"
     volumes:
-      - ./src/CustomerService:/app
+      - ./src/CustomerService:/app/CustomerService
+      - ./src/Shared:/app/Shared
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - "ConnectionStrings__DefaultConnection=Server=host.docker.internal,1433;Database=CustomerServiceDb;User=sa;Password=p@ssw0rd;TrustServerCertificate=true;Encrypt=false;"
     command:
-      ["dotnet", "watch", "run", "--urls=http://0.0.0.0:8080", "--project", "CustomerService.API/CustomerService.API.csproj", "--launch-profile", "Docker"]
+      [
+        "dotnet",
+        "watch",
+        "run",
+        "--urls=https://0.0.0.0:8080",
+        "--project",
+        "CustomerService.API/CustomerService.API.csproj",
+        "--launch-profile",
+        "Docker",
+        "--environment",
+        "Docker"
+      ]
 
   api-gateway:
     build:
@@ -43,9 +69,18 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - "ReverseProxy__Clusters__productCluster__Destinations__productAPI__Address=http://product-service:8080/"
-      - "ReverseProxy__Clusters__customerCluster__Destinations__customerAPI__Address=http://customer-service:8080/"
+      - "ReverseProxy__Clusters__customerCluster__Destinations__customerAPI__Address=https://customer-service:8080/"
     command:
-      ["dotnet", "watch", "run", "--urls=http://0.0.0.0:8080", "--project", "ApiGateway.csproj", "--launch-profile", "Docker"]
+      [
+        "dotnet",
+        "watch",
+        "run",
+        "--urls=http://0.0.0.0:8080",
+        "--project",
+        "ApiGateway.csproj",
+        "--launch-profile",
+        "Docker"
+      ]
 
   auth-service:
     build:
@@ -60,4 +95,13 @@ services:
       - Jwt__Key=M2QzMy00Y2MwLTg3NDEtYjM4OGUxMTkxNmQxI
       - Jwt__ExpiryMinutes=60
     command:
-      ["dotnet", "watch", "run", "--urls=http://0.0.0.0:8080", "--project", "AuthService.API.csproj", "--launch-profile", "Docker"]
+      [
+        "dotnet",
+        "watch",
+        "run",
+        "--urls=http://0.0.0.0:8080",
+        "--project",
+        "AuthService.API.csproj",
+        "--launch-profile",
+        "Docker"
+      ]

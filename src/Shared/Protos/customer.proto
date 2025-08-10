@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+option csharp_namespace = "Shared.Protos";
+
+package customer;
+
+// The customer service definition
+service CustomerService {
+  // Get customer by email
+  rpc GetCustomerByEmail (GetCustomerByEmailRequest) returns (CustomerResponse);
+}
+
+// The request message containing the email
+message GetCustomerByEmailRequest {
+  string email = 1;
+}
+
+// The response message containing the customer
+// Data types must be compatible but not the same as in c#
+// Indexing should not be changed to ensure backward compatibility (in our case it wont make a difference because both product and customer are reading from the same file)
+message CustomerResponse {
+  string id = 1;                    // Guid as string
+  string first_name = 2;            // string
+  string last_name = 3;             // string
+  string email = 4;                 // string
+  string phone_number = 5;          // string
+  string created_at = 6;            // DateTime as string (ISO format)
+}

@@ -7,6 +7,7 @@ using ProductService.Application.Common.Behaviors;
 using ProductService.Domain.Interfaces;
 using ProductService.Infrastructure.Data;
 using ProductService.Infrastructure.Repositories;
+using ProductService.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +20,9 @@ builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBeh
 builder.Services.AddValidatorsFromAssemblyContaining<CreateProductCommandValidator>();
 
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
+
+// Register gRPC client
+builder.Services.AddScoped<ICustomerGrpcClient, CustomerGrpcClient>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
